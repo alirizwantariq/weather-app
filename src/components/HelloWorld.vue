@@ -1,58 +1,195 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
+  <div>
+    <div class="container-fluid p-0 m-0">
+      <div class="row">
+        <div class="col-lg-8 ms-5">
+          <input class="input" type="text" v-model="searchcity" placeholder="Enter City Name" />
+          <button class="button" @click="getdata()">Search</button>
+
+          <div>
+            <div class="weather-data">
+              <div>
+                <h1 class="city">{{ this.city }}</h1>
+                <p class="condition">{{ this.description }}</p>
+                <h5 class="temp">
+                  <v-icon color="#FF0000" class="mr-2" size="40">mdi-thermometer-high</v-icon>{{ this.temp
+                  }}<span>&#176;</span>
+                </h5>
+              </div>
+              <div>
+                <img class="img" v-bind:src="this.imgsrc" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'HelloWorld',
+  name: "HelloWorld",
+  data() {
+    return {
+      time: "",
+      citie: "",
+      searchcity: "",
+      imgsrc: "",
+      city: "",
+      temp: "",
+      description: "",
+      pressure: "",
+      humidity: "",
+      visibility: "",
+      right: null,
+    };
+  },
   props: {
-    msg: String
-  }
-}
-</script>
+    msg: String,
+  },
+  mounted() {
+    fetch(
+      "https://api.openweathermap.org/data/2.5/weather?q=Lahore&appid=306807ad7cfa2516d41e3318086b059d"
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        this.time = new Date(data.dt * 1000 + data.timezone * 1000);
+        this.city = data.name;
+        this.temp = Math.round(data.main.temp_max - 273.15);
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
+        this.description = data.weather[0].description;
+        this.pressure = data.main.pressure;
+        this.humidity = data.main.humidity;
+        this.visibility = data.visibility;
+        this.imgsrc = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+      });
+  },
+  methods: {
+    getdata() {
+      console.log(this.searchcity);
+      fetch(
+        `https://api.openweathermap.org/data/2.5/weather?q=${this.searchcity}&appid=306807ad7cfa2516d41e3318086b059d`
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          this.time = new Date(data.dt * 1000 + data.timezone * 1000);
+          this.city = data.name;
+          this.temp = Math.round(data.main.temp_max - 273.15);
+
+          this.description = data.weather[0].description;
+          this.pressure = data.main.pressure;
+          this.humidity = data.main.humidity;
+          this.visibility = data.visibility;
+          this.imgsrc = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+        });
+    },
+  },
+};
+</script>
 <style scoped>
-h3 {
-  margin: 40px 0 0;
+.temp {
+  margin-top: 20px;
+  font-size: 28px;
 }
-ul {
-  list-style-type: none;
-  padding: 0;
+
+.input {
+  width: 400px;
+  height: 20px;
+  margin-top: 20px;
+  border: none;
+  border-bottom: 2px solid black;
 }
-li {
+
+input:focus {
+  outline: none;
+}
+
+.img {
+  height: 100px;
+  width: 100px;
+}
+
+.city-name {
+  font-size: 16px;
+  color: black;
+  cursor: pointer;
+
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-top: 5px;
+}
+
+.button {
+  background-color: grey;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  text-align: center;
+  text-decoration: none;
   display: inline-block;
-  margin: 0 10px;
+  font-size: 16px;
+  padding-top: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 5px;
 }
-a {
-  color: #42b983;
+
+.city-name:hover {
+  background-color: black;
+  color: white;
+  border-radius: 10px;
+}
+
+.list {
+  background-color: #eaecef !important;
+  text-align: center;
+  margin-top: 60px;
+  height: 690px;
+  margin-right: 10px;
+  border-radius: 10px;
+  overflow: scroll;
+  overflow-x: hidden;
+}
+
+.city {
+  font-size: 32px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+}
+
+.condition {
+  font-size: 26px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.icon {
+  color: black;
+  margin-left: 20px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+}
+
+.name {
+  color: grey;
+}
+
+.weather-more-data {
+  padding: 20px;
+  background-color: #eaecef;
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-evenly;
+  border-radius: 10px;
+}
+
+.weather-data {
+  width: 50%;
+  padding: 20px;
+  border: 1px solid black;
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  border-radius: 10px;
 }
 </style>
