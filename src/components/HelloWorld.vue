@@ -3,13 +3,17 @@
     <div class="container-fluid p-0 m-0">
       <div class="row">
         <div class="col-lg-8 ms-5">
-          <input class="input" type="text" v-model="searchcity" placeholder="Enter City Name" />
-          <button class="button" @click="getdata()">Search</button>
-
+          <b-input-group class="mt-3 w-50">
+            <b-form-input type="search" v-model="searchcity" placeholder="Enter City Name"></b-form-input>
+            <b-input-group-append>
+              <b-button variant="outline-success" @click="getdata()">Search</b-button>
+            </b-input-group-append>
+          </b-input-group>
           <div>
             <div class="weather-data">
               <div>
                 <h1 class="city">{{ this.city }}</h1>
+                <small class="rain">{{ this.rain }}</small>
                 <p class="condition">{{ this.description }}</p>
                 <h5 class="temp">
                   <v-icon color="#FF0000" class="mr-2" size="40">mdi-thermometer-high</v-icon>{{ this.temp
@@ -36,6 +40,7 @@ export default {
       citie: "",
       searchcity: "",
       imgsrc: "",
+      rain:'',
       city: "",
       temp: "",
       description: "",
@@ -44,9 +49,6 @@ export default {
       visibility: "",
       right: null,
     };
-  },
-  props: {
-    msg: String,
   },
   mounted() {
     fetch(
@@ -92,19 +94,6 @@ export default {
   margin-top: 20px;
   font-size: 28px;
 }
-
-.input {
-  width: 400px;
-  height: 20px;
-  margin-top: 20px;
-  border: none;
-  border-bottom: 2px solid black;
-}
-
-input:focus {
-  outline: none;
-}
-
 .img {
   height: 100px;
   width: 100px;
@@ -119,22 +108,6 @@ input:focus {
   margin-right: 10px;
   margin-top: 5px;
 }
-
-.button {
-  background-color: grey;
-  border: none;
-  border-radius: 5px;
-  color: white;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  padding-top: 5px;
-  padding-left: 10px;
-  padding-right: 10px;
-  padding-bottom: 5px;
-}
-
 .city-name:hover {
   background-color: black;
   color: white;
